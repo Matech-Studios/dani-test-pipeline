@@ -3,10 +3,12 @@ on:
     push:
         branches:
             - main
-    workflow_run:
-      workflows: ["Deploy to Production"]
-      types:
-        - completed
+    workflow_dispatch: # Add this to enable manual triggering
+      inputs:
+        deployment_type:
+          description: 'Type of deployment'
+          required: true
+          default: 'dev'
 
 jobs:
     build:
@@ -69,9 +71,7 @@ jobs:
         needs: [ build, deploy_to_dev ]
         steps:
             - name: Deploy to Production
-              if: ${{ github.event.deploy_to_prod.event == 'deploy_to_prod' && github.event.deploy_to_prod.workflow == 'Deploy to Production' }}
-              env:
-                  IMAGE_VERSION: ${{ env.IMAGE_VERSION }}
+              if: github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_type == 'prod' # Check manual trigger and prod type
               run: |
                 echo "DOCKER IMAGE TO DEPLOY ${{needs.build.outputs.image_version}}"
                 #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
