@@ -28,12 +28,16 @@ jobs:
               id: login-ecr
               uses: aws-actions/amazon-ecr-login@v1
 
+            - name: Set up Image tag
+              run: |
+                echo ${cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'} >> IMAGE_TAG
+
             - name: Build, tag, and push image to Amazon ECR
               env:
                   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                   ECR_REPOSITORY: test-dani-repo
               run: |
-                  IMAGE_TAG=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
+                  #IMAGE_TAG=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
                   docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:v$IMAGE_TAG .
                   docker push $ECR_REGISTRY/$ECR_REPOSITORY:v$IMAGE_TAG
 
@@ -41,6 +45,7 @@ jobs:
               run: |
                 export VERSION=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
                 echo $VERSION
+                echo $IMAGE_TAG
                 #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
                 #cd matech-memento-k8s
                 #git config --global 
