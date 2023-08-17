@@ -1,0 +1,11 @@
+{
+    "userNotFound": "User not found.",
+    "wrongCredentials": "Wrong credentials",
+    "invalidEmail": "Invalid email.",
+    "emailNotVerified": "Email not verified",
+    "emailAlreadyVerified": "Email is already verified",
+    "emailAlreadyInUse": "Email already in use.",
+    "idTokenExpired": "The ID token has expired.",
+    "idTokenRevoked": "The ID token has been revoked.",
+    "default": "An error occurred with Firebase Authentication."
+}

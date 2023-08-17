@@ -1,0 +1,57 @@
+version: '3.1'
+services:
+  db:
+    container_name: memento-db
+    image: postgres:latest
+    expose:
+      - ${DB_PORT}
+    ports:
+      - ${DB_PORT}:5432
+
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    command:
+      - 'postgres'
+      - '-c'
+      - 'wal_level=logical'
+    restart: unless-stopped
+  api:
+    container_name: memento-api
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: matech-api
+    depends_on:
+      - db
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    env_file:
+      - .env
+    links:
+      - db
+    restart: unless-stopped
+
+  migration:
+    build:
+      context: .
+      dockerfile: migration.Dockerfile
+    command: sh -c "yarn migration:create && yarn migration:up"
+    links:
+      - db
+    depends_on:
+      - db
+    env_file: ./.env
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DIALECT: ${DB_DIALECT}
+      MIKRO_ORM_CLI: ${MIKRO_ORM_CLI}
+
+volumes:
+  db:
+    driver: local

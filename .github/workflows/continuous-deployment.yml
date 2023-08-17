@@ -1,0 +1,69 @@
+name: Memento API - Continuous Deployment
+on:
+    push:
+        branches:
+            - master
+    workflow_run:
+      workflows: ["Manual Trigger Workflow"]
+      types:
+        - completed
+
+jobs:
+    build:
+        name: Build & Push Docker Image
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ vars.AWS_REGION }}
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+
+            - name: Build, tag, and push image to Amazon ECR
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  ECR_REPOSITORY: test-dani-repo
+              run: |
+                  IMAGE_TAG=`$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')`
+                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+            - name: Deploy to Stage
+              run: |
+                export VERSION=`$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')`
+                echo $VERSION
+                #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
+                #cd matech-memento-k8s
+                #git config --global 
+                #git config --global 
+                #cd v2/memento-api/staging 
+                #cp -f values.yaml-DEFAULT values.yaml
+                #sed -i "s/##VERSION##/$VERSION/g" values.yaml
+                #git add *
+                #git commit -m "version $VERSION"
+                #git push
+
+            - name: Deploy to Production
+              if: ${{ github.event.workflow_run.event == 'workflow_run' && github.event.workflow_run.workflow == 'Manual Trigger Workflow' }}
+              run: |
+                export VERSION=`$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')`
+                echo $VERSION
+                #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
+                #cd matech-memento-k8s
+                #git config --global 
+                #git config --global 
+                #cd v2/memento-api/production 
+                #cp -f values.yaml-DEFAULT values.yaml
+                #sed -i "s/##VERSION##/$VERSION/g" values.yaml
+                #git add *
+                #git commit -m "version $VERSION"
+                #git push

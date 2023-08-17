@@ -1,0 +1,4 @@
+src/core/database/migrations
+dist
+webpack-hmr.config.js
+node_module
