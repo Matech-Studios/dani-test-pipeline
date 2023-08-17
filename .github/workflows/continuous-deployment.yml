@@ -3,12 +3,6 @@ on:
     push:
         branches:
             - main
-    workflow_dispatch: # Add this to enable manual triggering
-      inputs:
-        deployment_type:
-          description: 'Type of deployment'
-          required: true
-          default: 'dev'
 
 jobs:
     build:
@@ -65,11 +59,34 @@ jobs:
                 #git commit -m "version $VERSION"
                 #git push
 
+    manual_confirmation:
+      name: Manual Confirmation
+      runs-on: ubuntu-latest
+      needs: deploy_to_dev
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+      steps:
+        - name: Request Manual Confirmation
+          id: confirmation
+          uses: actions/github-script@v4
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+              const response = await github.rest.actions.createOrUpdateWorkflowRun({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: ${{ github.workflow }},
+                ref: context.sha,
+                inputs: {
+                  deployment_type: 'prod'
+                }
+              });
+              console.log(response);
+
     deploy_to_prod:
         name: Deploy to Production
         runs-on: ubuntu-latest
-        needs: [ build, deploy_to_dev ]
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_type == 'prod' # Check manual trigger and prod type
+        needs: [ build, deploy_to_dev, manual_confirmation ]
         steps:
             - name: Deploy to Production
               run: |
