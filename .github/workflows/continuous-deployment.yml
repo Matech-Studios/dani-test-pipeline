@@ -27,48 +27,53 @@ jobs:
             - name: Login to Amazon ECR
               id: login-ecr
               uses: aws-actions/amazon-ecr-login@v1
-
+            
             - name: Set up Image tag
               run: |
-                echo "v$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')" >> IMAGE_TAG
+                echo "IMAGE_VERSION=v$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')" >> IMAGE_TAG
 
-            - name: Build, tag, and push image to Amazon ECR
-              env:
-                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  ECR_REPOSITORY: test-dani-repo
+            - name: Test version
               run: |
-                  #IMAGE_TAG=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:v$IMAGE_TAG .
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:v$IMAGE_TAG
+                echo ${{ steps.version.outputs.IMAGE_VERSION }}
 
-            - name: Deploy to Stage
-              run: |
-                export VERSION=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
-                echo $VERSION
-                echo $IMAGE_TAG
-                #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
-                #cd matech-memento-k8s
-                #git config --global 
-                #git config --global 
-                #cd v2/memento-api/staging 
-                #cp -f values.yaml-DEFAULT values.yaml
-                #sed -i "s/##VERSION##/$VERSION/g" values.yaml
-                #git add *
-                #git commit -m "version $VERSION"
-                #git push
 
-            - name: Deploy to Production
-              if: ${{ github.event.workflow_run.event == 'workflow_run' && github.event.workflow_run.workflow == 'Manual Trigger Workflow' }}
-              run: |
-                export VERSION=`$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')`
-                echo $VERSION
-                #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
-                #cd matech-memento-k8s
-                #git config --global 
-                #git config --global 
-                #cd v2/memento-api/production 
-                #cp -f values.yaml-DEFAULT values.yaml
-                #sed -i "s/##VERSION##/$VERSION/g" values.yaml
-                #git add *
-                #git commit -m "version $VERSION"
-                #git push
+#            - name: Build, tag, and push image to Amazon ECR
+#              env:
+#                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#                  ECR_REPOSITORY: test-dani-repo
+#              run: |
+#                  #IMAGE_TAG=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
+#                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION .
+#                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION
+#
+#            - name: Deploy to Stage
+#              run: |
+#                export VERSION=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
+#                echo $VERSION
+#                echo $IMAGE_TAG
+#                #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
+#                #cd matech-memento-k8s
+#                #git config --global 
+#                #git config --global 
+#                #cd v2/memento-api/staging 
+#                #cp -f values.yaml-DEFAULT values.yaml
+#                #sed -i "s/##VERSION##/$VERSION/g" values.yaml
+#                #git add *
+#                #git commit -m "version $VERSION"
+#                #git push
+#
+#            - name: Deploy to Production
+#              if: ${{ github.event.workflow_run.event == 'workflow_run' && github.event.workflow_run.workflow == 'Manual Trigger Workflow' }}
+#              run: |
+#                export VERSION=`$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')`
+#                echo $VERSION
+#                #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
+#                #cd matech-memento-k8s
+#                #git config --global 
+#                #git config --global 
+#                #cd v2/memento-api/production 
+#                #cp -f values.yaml-DEFAULT values.yaml
+#                #sed -i "s/##VERSION##/$VERSION/g" values.yaml
+#                #git add *
+#                #git commit -m "version $VERSION"
+#                #git push
