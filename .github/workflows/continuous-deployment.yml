@@ -33,13 +33,13 @@ jobs:
                   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                   ECR_REPOSITORY: test-dani-repo
               run: |
-                  IMAGE_TAG=`$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')`
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+                  IMAGE_TAG=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
+                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:v$IMAGE_TAG .
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:v$IMAGE_TAG
 
             - name: Deploy to Stage
               run: |
-                export VERSION=`$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')`
+                export VERSION=cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'
                 echo $VERSION
                 #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
                 #cd matech-memento-k8s
