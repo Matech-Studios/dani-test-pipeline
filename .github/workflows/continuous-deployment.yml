@@ -30,7 +30,7 @@ jobs:
             
             - name: Set up Image tag
               run: |
-                echo "IMAGE_VERSION=v$(jq -r .version package.json)"
+                echo "IMAGE_VERSION=v$(jq -r .version package.json)" >> $GITHUB_OUTPUT
 
             - name: Test version
               run: |
