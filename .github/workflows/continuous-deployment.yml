@@ -30,7 +30,7 @@ jobs:
             
             - name: Set up Image tag
               run: |
-                echo "IMAGE_VERSION=v$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')" >> IMAGE_TAG
+                echo "IMAGE_VERSION=v$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')"
 
             - name: Test version
               run: |
