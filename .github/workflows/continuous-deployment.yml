@@ -30,7 +30,7 @@ jobs:
 
             - name: Set up Image tag
               run: |
-                echo "v${cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g'}" >> IMAGE_TAG
+                echo "v$(cat package.json | grep version  | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')" >> IMAGE_TAG
 
             - name: Build, tag, and push image to Amazon ECR
               env:
