@@ -54,6 +54,8 @@ jobs:
                 echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
                 chmod 600 pipeline_deploy_key
                 ssh-add ./pipeline_deploy_key
+                git config --global user.email "you@example.com"
+                git config --global user.name "Automated Pipeline Deployer"
                 git clone git@github.com:Matech-Studios/matech-memento-k8s.git
                 cd matech-memento-k8s 
                 cd v2/memento-api/staging 
