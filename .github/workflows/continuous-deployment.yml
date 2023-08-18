@@ -48,6 +48,8 @@ jobs:
             - name: Deploy to Dev
               run: |
                 echo "DOCKER IMAGE TO DEPLOY ${{needs.build.outputs.image_version}}"
+                eval "$(ssh-agent -s)"
+                ssh-add ${{ secrets.PIPELINE_DEPLOY_KEY }}
                 #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
                 #cd matech-memento-k8s
                 #git config --global 
