@@ -46,22 +46,22 @@ jobs:
         needs: build
         steps:   
             - name: Deploy to Dev
+              env: 
+                IMAGE_VERSION: ${{needs.build.outputs.image_version}}
               run: |
-                echo "DOCKER IMAGE TO DEPLOY ${{needs.build.outputs.image_version}}"
+                echo "DOCKER IMAGE TO DEPLOY $IMAGE_VERSION"
                 eval "$(ssh-agent -s)"
                 echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
                 chmod 600 pipeline_deploy_key
                 ssh-add ./pipeline_deploy_key
-                #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
-                #cd matech-memento-k8s
-                #git config --global 
-                #git config --global 
-                #cd v2/memento-api/staging 
-                #cp -f values.yaml-DEFAULT values.yaml
-                #sed -i "s/##VERSION##/$VERSION/g" values.yaml
-                #git add *
-                #git commit -m "version $VERSION"
-                #git push
+                git clone git@github.com:Matech-Studios/matech-memento-k8s.git
+                cd matech-memento-k8s 
+                cd v2/memento-api/staging 
+                cp -f values.yaml-DEFAULT values.yaml
+                sed -i "s/##VERSION##/$IMAGE_VERSION/g" values.yaml
+                git add *
+                git commit -m "version $IMAGE_VERSION"
+                git push
 
     deploy_to_prod:
         name: Deploy to Production
