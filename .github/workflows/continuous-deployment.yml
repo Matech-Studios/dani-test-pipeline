@@ -72,6 +72,8 @@ jobs:
         environment: 'Production'
         steps:
             - name: Deploy to Production
+              env: 
+                IMAGE_VERSION: ${{needs.build.outputs.image_version}}
               run: |
                 echo "DOCKER IMAGE TO DEPLOY $IMAGE_VERSION"
                 eval "$(ssh-agent -s)"
