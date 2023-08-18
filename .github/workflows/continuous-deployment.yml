@@ -50,7 +50,7 @@ jobs:
                 echo "DOCKER IMAGE TO DEPLOY ${{needs.build.outputs.image_version}}"
                 eval "$(ssh-agent -s)"
                 echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
-                chmod 644 pipeline_deploy_key
+                chmod 600 pipeline_deploy_key
                 ssh-add ./pipeline_deploy_key
                 #git clone git@github.com:Matech-Studios/matech-memento-k8s.git
                 #cd matech-memento-k8s
