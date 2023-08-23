@@ -29,14 +29,14 @@ jobs:
               run: |
                 echo "IMAGE_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
 
-#            - name: Build, tag, and push image to Amazon ECR
-#              env:
-#                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#                  ECR_REPOSITORY: test-dani-repo
-#                  IMAGE_VERSION: ${{ env.IMAGE_VERSION }}
-#              run: |
-#                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION .
-#                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION
+            - name: Build, tag, and push image to Amazon ECR
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  ECR_REPOSITORY: test-dani-repo
+                  IMAGE_VERSION: ${{ env.IMAGE_VERSION }}
+              run: |
+                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION .
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION
         outputs:
           image_version: ${{ env.IMAGE_VERSION }}
 
