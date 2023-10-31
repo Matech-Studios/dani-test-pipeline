@@ -20,7 +20,7 @@ jobs:
 
             - name: Generate new package version
               run: |
-                COMMIT_MESSAGE=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
+                COMMIT_MESSAGE=$(git log --format=%B -n 1 $GITHUB_SHA)
                 echo "Commit Message: $COMMIT_MESSAGE"
 
                 IMAGE_VERSION=$(jq -r .version package.json)
