@@ -13,6 +13,11 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
+            - name: Get Commit Message
+              run: |
+                COMMIT_MESSAGE=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
+                echo "Commit Message: $COMMIT_MESSAGE"
+
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
               with:
@@ -28,8 +33,7 @@ jobs:
               id: image_version
               run: |
                 echo "IMAGE_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
-    rules:
-        - if: '$CI_COMMIT_MESSAGE !~ /feature/'
+
 
 #            - name: Build, tag, and push image to Amazon ECR
 #              env:
