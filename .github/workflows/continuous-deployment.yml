@@ -36,7 +36,7 @@ jobs:
 
                 echo "New package.json version: $packageJsonVersion"
 
-                jq '.version = \$packageJsonVersion' package.json > tmpfile && mv tmpfile package.json
+                jq --arg new_version "$packageJsonVersion" '.version = $new_version' package.json > tmpfile && mv tmpfile package.json
 
                 cat package.json 
 
