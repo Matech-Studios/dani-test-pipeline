@@ -38,8 +38,6 @@ jobs:
 
                 jq --arg new_version "$packageJsonVersion" '.version = $new_version' package.json > tmpfile && mv tmpfile package.json
 
-            - name: Commit report
-              run: |
                 eval "$(ssh-agent -s)"
                 echo "${{ secrets.VERSION_DEPLOY_KEY }}" > version_deploy_key
                 chmod 600 version_deploy_key
@@ -47,7 +45,7 @@ jobs:
                 git config --global user.email "you@example.com"
                 git config --global user.name "Automated version Deployer"
                 git add *
-                git commit -m "update package version"
+                git commit -m "update package version $packageJsonVersion"
                 git push
 
             - name: Configure AWS credentials
