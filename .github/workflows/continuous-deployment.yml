@@ -27,8 +27,8 @@ jobs:
                 echo "Current version: $IMAGE_VERSION"
 
                 major="1"
-                minor="2"
-                patch="3"
+                minor="1"
+                patch="1"
 
                 if [[ $COMMIT_MESSAGE == feature* ]]; then
                     packageJsonVersion="${major}.$((minor + 1)).$patch"
