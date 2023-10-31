@@ -1,13 +1,13 @@
 name: Memento API - Continuous Deployment
 on:
-    push:
-      branches:
-        - main
-#    pull_request:
-#      branches:    
+#    push:
+#      branches:
 #        - main
-#      types:
-#        - closed
+    pull_request:
+      branches:    
+        - main
+      types:
+        - closed
 
 jobs:
     build:
@@ -38,7 +38,17 @@ jobs:
 
                 jq --arg new_version "$packageJsonVersion" '.version = $new_version' package.json > tmpfile && mv tmpfile package.json
 
-                cat package.json 
+            - name: Commit report
+              run: |
+                eval "$(ssh-agent -s)"
+                echo "${{ secrets.VERSION_DEPLOY_KEY }}" > version_deploy_key
+                chmod 600 version_deploy_key
+                ssh-add ./version_deploy_key
+                git config --global user.email "you@example.com"
+                git config --global user.name "Automated version Deployer"
+                git add *
+                git commit -m "update package version"
+                git push
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
