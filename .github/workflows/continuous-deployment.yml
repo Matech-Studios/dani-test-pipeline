@@ -19,6 +19,8 @@ jobs:
               run: |
                 COMMIT_MESSAGE=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
                 echo "Commit Message: $COMMIT_MESSAGE"
+                BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+                echo "Branch Name: $BRANCH_NAME"
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
