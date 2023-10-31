@@ -28,6 +28,8 @@ jobs:
               id: image_version
               run: |
                 echo "IMAGE_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
+    rules:
+        - if: '$CI_COMMIT_MESSAGE !~ /feature/'
 
 #            - name: Build, tag, and push image to Amazon ECR
 #              env:
