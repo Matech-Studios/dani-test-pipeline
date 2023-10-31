@@ -18,7 +18,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Get Commit Message
+            - name: Generate new package version
               run: |
                 COMMIT_MESSAGE=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
                 echo "Commit Message: $COMMIT_MESSAGE"
@@ -35,6 +35,10 @@ jobs:
                 fi
 
                 echo "New package.json version: $packageJsonVersion"
+
+                jq '.version = $packageJsonVersion' package.json > tmpfile && mv tmpfile package.json
+
+                cat package.json 
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
