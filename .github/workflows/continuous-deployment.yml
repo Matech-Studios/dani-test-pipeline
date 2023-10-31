@@ -23,7 +23,7 @@ jobs:
                 COMMIT_MESSAGE=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
                 echo "Commit Message: $COMMIT_MESSAGE"
 
-                IMAGE_VERSION=v$(jq -r .version package.json)
+                IMAGE_VERSION=$(jq -r .version package.json)
                 echo "Current version: $IMAGE_VERSION"
 
                 major="1"
