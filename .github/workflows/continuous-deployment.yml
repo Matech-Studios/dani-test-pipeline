@@ -26,9 +26,7 @@ jobs:
                 IMAGE_VERSION=$(jq -r .version package.json)
                 echo "Current version: $IMAGE_VERSION"
 
-                major="1"
-                minor="1"
-                patch="1"
+                IFS='.' read -r major minor patch <<< "$IMAGE_VERSION"
 
                 if [[ $COMMIT_MESSAGE == feature* ]]; then
                     packageJsonVersion="${major}.$((minor + 1)).$patch"
