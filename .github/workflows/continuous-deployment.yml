@@ -23,10 +23,13 @@ jobs:
                 COMMIT_MESSAGE=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
                 echo "Commit Message: $COMMIT_MESSAGE"
 
+                IMAGE_VERSION=v$(jq -r .version package.json)
+                echo "New package.json version: $packageJsonVersion"
+
                 major="1"
                 minor="2"
                 patch="3"
-                
+
                 if [[ $COMMIT_MESSAGE == feature* ]]; then
                     packageJsonVersion="${major}.$((minor + 1)).$patch"
                 elif [[ $COMMIT_MESSAGE == bugfix* || $COMMIT_MESSAGE == hotfix* ]]; then
