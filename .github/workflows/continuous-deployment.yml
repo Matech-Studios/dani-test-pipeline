@@ -22,8 +22,18 @@ jobs:
               run: |
                 COMMIT_MESSAGE=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
                 echo "Commit Message: $COMMIT_MESSAGE"
-                BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-                echo "Branch Name: $BRANCH_NAME"
+
+                major="1"
+                minor="2"
+                patch="3"
+                
+                if [[ $COMMIT_MESSAGE == feature* ]]; then
+                    packageJsonVersion="${major}.$((minor + 1)).$patch"
+                elif [[ $COMMIT_MESSAGE == bugfix* || $COMMIT_MESSAGE == hotfix* ]]; then
+                    packageJsonVersion="${major}.$minor.$((patch + 1))"
+                fi
+
+                echo "New package.json version: $packageJsonVersion"
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
