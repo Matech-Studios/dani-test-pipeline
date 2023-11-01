@@ -57,9 +57,9 @@ jobs:
               run: |
 
                 eval "$(ssh-agent -s)"
-                echo "${{ secrets.VERSION_DEPLOY_KEY }}" > version_deploy_key
-                chmod 600 version_deploy_key
-                ssh-add ./version_deploy_key
+                echo "${{ secrets.VERSION_DEPLOY_KEY }}" > /tmp/version_deploy_key
+                chmod 600 /tmp/version_deploy_key
+                ssh-add /tmp/version_deploy_key
                 git config --global user.email "you@example.com"
                 git config --global user.name "Automated version Deployer"
                 git add *
