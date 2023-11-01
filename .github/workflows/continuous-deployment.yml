@@ -40,7 +40,7 @@ jobs:
                 elif [[ $COMMIT_MESSAGE == bugfix* || $COMMIT_MESSAGE == hotfix* ]]; then
                     packageJsonVersion="${major}.$minor.$((patch + 1))"
                 else 
-                  echo "Can not determine commit feature - $COMMIT_MESSAGE"
+                  echo "Can not determine commit prefix - COMMIT_MESSAGE: $COMMIT_MESSAGE"
                   exit 1
                 fi
 
