@@ -20,7 +20,7 @@ jobs:
 
             - name: Generate new package version
               run: |
-                COMMIT_MESSAGE=$(git log --format=%B -n 1 $GITHUB_SHA)
+                COMMIT_MESSAGE="${{ github.event.pull_request.title }}"
                 echo "Commit Message: $COMMIT_MESSAGE"
 
                 IMAGE_VERSION=$(jq -r .version package.json)
