@@ -24,10 +24,6 @@ jobs:
                 COMMIT_MESSAGE="${{ github.event.pull_request.title }}"
                 echo "Commit Message: $COMMIT_MESSAGE"
 
-                ### TO BE DELETED ###
-                COMMIT_MESSAGE2=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
-                echo "Commit Message: $COMMIT_MESSAGE2"
-
                 # Extract the current image version from package.json
                 IMAGE_VERSION=$(jq -r .version package.json)
                 echo "Current version: $IMAGE_VERSION"
@@ -43,6 +39,9 @@ jobs:
                     packageJsonVersion="${major}.$((minor + 1)).$patch"
                 elif [[ $COMMIT_MESSAGE == bugfix* || $COMMIT_MESSAGE == hotfix* ]]; then
                     packageJsonVersion="${major}.$minor.$((patch + 1))"
+                else 
+                  echo "Can not determine commit feature - $COMMIT_MESSAGE"
+                  exit 1
                 fi
 
                 # Disable case-insensitive matching if needed
