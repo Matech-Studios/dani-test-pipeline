@@ -24,7 +24,7 @@ jobs:
                 COMMIT_MESSAGE="${{ github.event.pull_request.title }}"
                 echo "Commit Message: $COMMIT_MESSAGE"
 
-                ### TO BE DELETED
+                ### TO BE DELETED ###
                 COMMIT_MESSAGE2=$(jq -r .head_commit.message $GITHUB_EVENT_PATH)
                 echo "Commit Message: $COMMIT_MESSAGE2"
 
