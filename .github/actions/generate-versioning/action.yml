@@ -12,8 +12,7 @@ runs:
       shell: bash
       run: |
         # Get the commit message from the pull request title
-        echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $COMMIT_MESSAGE
-        #COMMIT_MESSAGE="${{ github.event.pull_request.title }}"
+        COMMIT_MESSAGE=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
         echo "Commit Message: $COMMIT_MESSAGE"
 
         # Extract the current image version from package.json
