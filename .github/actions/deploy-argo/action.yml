@@ -13,6 +13,10 @@ inputs:
     description: "The application to be updated"
     required: true
     default: ""
+  pipeline_deploy_key:
+    description: "ssh key to push to the argo repo"
+    required: true
+    default: 'World'
 runs:
   using: "composite"
   steps:
