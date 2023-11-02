@@ -26,6 +26,7 @@ runs:
         IMAGE_VERSION: ${{inputs.image_version}}
         ENVIRONMENT: ${{inputs.environment}}
         APPLICATION_NAME: ${{inputs.application_name}}
+        PIPELINE_DEPLOY_KEY: ${{inputs.pipeline_deploy_key}}
       run: |
         echo "Version to deploy: $IMAGE_VERSION on $ENVIRONMENT"
         cat << EOF
