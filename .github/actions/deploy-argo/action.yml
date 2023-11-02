@@ -1,0 +1,32 @@
+name: "Deploy"
+description: "This composite action will will deploy the application"
+inputs:
+  image_version: 
+    description: "version of the image to deploy"
+    required: true
+    default: '1.0.0'
+  environment:
+    description: "Environment"
+    required: true
+    default: 'development'
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy to Argo
+      shell: bash
+      run: |
+        echo "Version to deploy: $image_version on $environment"
+#        eval "$(ssh-agent -s)"
+#        echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
+#        chmod 600 pipeline_deploy_key
+#        ssh-add ./pipeline_deploy_key
+#        git config --global user.email "you@example.com"
+#        git config --global user.name "Automated Pipeline Deployer"
+#        git clone git@github.com:Matech-Studios/matech-memento-k8s.git
+#        cd matech-memento-k8s
+#        cd v2/memento-api/$environment
+#        cp -f values.yaml-DEFAULT values.yaml
+#        sed -i "s/##VERSION##/$image_version/g" values.yaml
+#        git add *
+#        git commit -m "version $image_version"
+#        git push
