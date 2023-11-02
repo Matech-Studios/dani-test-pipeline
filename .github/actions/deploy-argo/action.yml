@@ -26,11 +26,12 @@ runs:
         IMAGE_VERSION: ${{inputs.image_version}}
         ENVIRONMENT: ${{inputs.environment}}
         APPLICATION_NAME: ${{inputs.application_name}}
+        PIPELINE_DEPLOY_KEY: ${{inputs.pipeline_deploy_key}}
       run: |
         echo "Version to deploy: $IMAGE_VERSION on $ENVIRONMENT"
         cat << EOF
         eval "$(ssh-agent -s)"
-        echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
+        echo "${{ PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
         chmod 600 pipeline_deploy_key
         ssh-add ./pipeline_deploy_key
         git config --global user.email "you@example.com"
