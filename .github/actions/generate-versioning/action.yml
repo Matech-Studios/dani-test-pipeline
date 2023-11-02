@@ -1,5 +1,10 @@
 name: "Generate Versioning"
 description: "This composite action will generate the package version and push it"
+inputs:
+  version_deploy_key: 
+    description: "ssh key to push to the repo"
+    required: true
+    default: 'World'
 runs:
   using: "composite"
   steps:
@@ -44,7 +49,7 @@ runs:
       run: |
 
         eval "$(ssh-agent -s)"
-        echo "${{ secrets.VERSION_DEPLOY_KEY }}" > /tmp/version_deploy_key
+        echo "${{ inputs.version_deploy_key }}" > /tmp/version_deploy_key
         chmod 600 /tmp/version_deploy_key
         ssh-add /tmp/version_deploy_key
         git config --global user.email "you@example.com"
