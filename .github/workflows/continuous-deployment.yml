@@ -58,7 +58,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: ./.github/actions/deploy-argo
+      - name: Deploy
+        uses: ./.github/actions/deploy-argo
         with:
           image_version: ${{needs.build.outputs.image_version}}
           pipeline_deploy_key: ${{ secrets.PIPELINE_DEPLOY_KEY }}
