@@ -1,14 +1,14 @@
 name: "Deploy"
 description: "This composite action will will deploy the application"
 inputs:
-  image_version: 
+  image_version:
     description: "version of the image to deploy"
     required: true
-    default: '1.0.0'
+    default: "1.0.0"
   environment:
     description: "Environment"
     required: true
-    default: 'development'
+    default: "development"
   application_name:
     description: "The application to be updated"
     required: true
@@ -23,18 +23,20 @@ runs:
         ENVIRONMENT: ${{inputs.environment}}
         APPLICATION_NAME: ${{inputs.application_name}}
       run: |
-        echo "Version to deploy: $IMAGE_VERSION on $environment"
-#        eval "$(ssh-agent -s)"
-#        echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
-#        chmod 600 pipeline_deploy_key
-#        ssh-add ./pipeline_deploy_key
-#        git config --global user.email "you@example.com"
-#        git config --global user.name "Automated Pipeline Deployer"
-#        git clone git@github.com:Matech-Studios/matech-memento-k8s.git
-#        cd matech-*-k8s
-#        cd v2/$APPLICATION_NAME/$ENVIRONMENT
-#        cp -f values.yaml-DEFAULT values.yaml
-#        sed -i "s/##VERSION##/$IMAGE_VERSION/g" values.yaml
-#        git add *
-#        git commit -m "version $IMAGE_VERSION"
-#        git push
+        echo "Version to deploy: $IMAGE_VERSION on $ENVIRONMENT"
+        cat << EOF
+        eval "$(ssh-agent -s)"
+        echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
+        chmod 600 pipeline_deploy_key
+        ssh-add ./pipeline_deploy_key
+        git config --global user.email "you@example.com"
+        git config --global user.name "Automated Pipeline Deployer"
+        git clone git@github.com:Matech-Studios/matech-memento-k8s.git
+        cd matech-*-k8s
+        cd v2/$APPLICATION_NAME/$ENVIRONMENT
+        cp -f values.yaml-DEFAULT values.yaml
+        sed -i "s/##VERSION##/$IMAGE_VERSION/g" values.yaml
+        git add *
+        git commit -m "version $IMAGE_VERSION"
+        git pus
+        EOF
