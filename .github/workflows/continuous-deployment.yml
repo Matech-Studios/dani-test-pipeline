@@ -1,87 +1,41 @@
 name: Memento API - Continuous Deployment
 on:
-#    push:
-#      branches:
-#        - main
-    pull_request:
-      branches:    
-        - main
-      types:
-        - closed
+  push:
+    branches:
+      - main
+#  pull_request:
+#    branches:
+#      - main
+#    types:
+#      - closed
 
 jobs:
-    build:
-        name: Build & Push Docker Image
-        runs-on: ubuntu-latest
+  build:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-            - name: Generate new package version
-              run: |
-                # Get the commit message from the pull request title
-                COMMIT_MESSAGE=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-                #COMMIT_MESSAGE="${{ github.event.pull_request.title }}"
-                echo "Commit Message: $COMMIT_MESSAGE"
+      - name: Modify version
+        uses: ./.github/actions/generate-versioning
 
-                # Extract the current image version from package.json
-                IMAGE_VERSION=$(jq -r .version package.json)
-                echo "Current version: $IMAGE_VERSION"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-                # Parse major, minor, and patch version numbers
-                IFS='.' read -r major minor patch <<< "$IMAGE_VERSION"
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-                # Enable case-insensitive matching for commit message
-                shopt -s nocasematch
-
-                # Determine the new package version based on the commit message
-                if [[ $COMMIT_MESSAGE == feature* ]]; then
-                    packageJsonVersion="${major}.$((minor + 1)).$patch"
-                elif [[ $COMMIT_MESSAGE == bugfix* || $COMMIT_MESSAGE == hotfix* ]]; then
-                    packageJsonVersion="${major}.$minor.$((patch + 1))"
-                else 
-                  echo "Can not determine commit prefix - COMMIT_MESSAGE: $COMMIT_MESSAGE"
-                  exit 1
-                fi
-
-                # Disable case-insensitive matching if needed
-                shopt -u nocasematch
-
-                if [ "$packageJsonVersion" != "" ]; then
-                  echo "New package.json version: $packageJsonVersion"
-                  jq --arg new_version "$packageJsonVersion" '.version = $new_version' package.json > tmpfile && mv tmpfile package.json
-                fi
-            
-            - name: Commit changes to package.json
-              run: |
-
-                eval "$(ssh-agent -s)"
-                echo "${{ secrets.VERSION_DEPLOY_KEY }}" > /tmp/version_deploy_key
-                chmod 600 /tmp/version_deploy_key
-                ssh-add /tmp/version_deploy_key
-                git config --global user.email "you@example.com"
-                git config --global user.name "Automated version Deployer"
-                git add *
-                git commit -m "update package version $packageJsonVersion"
-                git push
-
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v1
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ secrets.AWS_REGION }}
-
-            - name: Login to Amazon ECR
-              id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
-            
-            - name: Set up Image tag
-              id: image_version
-              run: |
-                echo "IMAGE_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
-
+      - name: Set up Image tag
+        id: image_version
+        run: |
+          echo "IMAGE_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
 
 #            - name: Build, tag, and push image to Amazon ECR
 #              env:
@@ -98,9 +52,9 @@ jobs:
 #        name: Deploy to Dev
 #        runs-on: ubuntu-latest
 #        needs: build
-#        steps:   
+#        steps:
 #            - name: Deploy to Dev
-#              env: 
+#              env:
 #                IMAGE_VERSION: ${{needs.build.outputs.image_version}}
 #              run: |
 #                echo "DOCKER IMAGE TO DEPLOY $IMAGE_VERSION"
@@ -111,8 +65,8 @@ jobs:
 #                git config --global user.email "you@example.com"
 #                git config --global user.name "Automated Pipeline Deployer"
 #                git clone git@github.com:Matech-Studios/matech-memento-k8s.git
-#                cd matech-memento-k8s 
-#                cd v2/memento-api/staging 
+#                cd matech-memento-k8s
+#                cd v2/memento-api/staging
 #                cp -f values.yaml-DEFAULT values.yaml
 #                sed -i "s/##VERSION##/$IMAGE_VERSION/g" values.yaml
 #                git add *
@@ -126,7 +80,7 @@ jobs:
 #        environment: 'Production'
 #        steps:
 #            - name: Deploy to Production
-#              env: 
+#              env:
 #                IMAGE_VERSION: ${{needs.build.outputs.image_version}}
 #              run: |
 #                echo "DOCKER IMAGE TO DEPLOY $IMAGE_VERSION"
@@ -137,8 +91,8 @@ jobs:
 #                git config --global user.email "you@example.com"
 #                git config --global user.name "Automated Pipeline Deployer"
 #                git clone git@github.com:Matech-Studios/matech-memento-k8s.git
-#                cd matech-memento-k8s 
-#                cd v2/memento-api/production 
+#                cd matech-memento-k8s
+#                cd v2/memento-api/production
 #                cp -f values.yaml-DEFAULT values.yaml
 #                sed -i "s/##VERSION##/$IMAGE_VERSION/g" values.yaml
 #                git add *
