@@ -1,8 +1,8 @@
 name: Memento API - Continuous Deployment
 on:
-#  push:
-#    branches:
-#      - main
+  #  push:
+  #    branches:
+  #      - main
   pull_request:
     branches:
       - main
@@ -39,41 +39,26 @@ jobs:
         run: |
           echo "IMAGE_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
 
-#            - name: Build, tag, and push image to Amazon ECR
-#              env:
-#                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#                  ECR_REPOSITORY: test-dani-repo
-#                  IMAGE_VERSION: ${{ env.IMAGE_VERSION }}
-#              run: |
-#                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION .
-#                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION
-#        outputs:
-#          image_version: ${{ env.IMAGE_VERSION }}
-#
-#    deploy_to_dev:
-#        name: Deploy to Dev
-#        runs-on: ubuntu-latest
-#        needs: build
-#        steps:
-#            - name: Deploy to Dev
-#              env:
-#                IMAGE_VERSION: ${{needs.build.outputs.image_version}}
-#              run: |
-#                echo "DOCKER IMAGE TO DEPLOY $IMAGE_VERSION"
-#                eval "$(ssh-agent -s)"
-#                echo "${{ secrets.PIPELINE_DEPLOY_KEY }}" > pipeline_deploy_key
-#                chmod 600 pipeline_deploy_key
-#                ssh-add ./pipeline_deploy_key
-#                git config --global user.email "you@example.com"
-#                git config --global user.name "Automated Pipeline Deployer"
-#                git clone git@github.com:Matech-Studios/matech-memento-k8s.git
-#                cd matech-memento-k8s
-#                cd v2/memento-api/staging
-#                cp -f values.yaml-DEFAULT values.yaml
-#                sed -i "s/##VERSION##/$IMAGE_VERSION/g" values.yaml
-#                git add *
-#                git commit -m "version $IMAGE_VERSION"
-#                git push
+      #- name: Build, tag, and push image to Amazon ECR
+      #  env:
+      #      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #      ECR_REPOSITORY: test-dani-repo
+      #      IMAGE_VERSION: ${{ env.IMAGE_VERSION }}
+      #  run: |
+      #      docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION .
+      #      docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_VERSION
+    outputs:
+      image_version: ${{ env.IMAGE_VERSION }}
+
+  deploy_to_dev:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: ./.github/actions/deploy-argo
+        with:
+          image_version: ${{needs.build.outputs.image_version}}
+          environment: development
 #
 #    deploy_to_prod:
 #        name: Deploy to Production
