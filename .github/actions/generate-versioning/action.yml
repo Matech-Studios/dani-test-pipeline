@@ -55,4 +55,4 @@ runs:
         git config --global user.name "Automated version Deployer"
         git add *
         git commit -m "update package version $packageJsonVersion"
-        git pus
+        git push
