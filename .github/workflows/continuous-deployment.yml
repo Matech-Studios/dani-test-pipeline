@@ -22,6 +22,7 @@ jobs:
         uses: ./.github/actions/generate-versioning
         with:
           version_deploy_key: ${{ secrets.VERSION_DEPLOY_KEY }}
+          version_deploy_token: ${{ secrets.VERSION_DEPLOY_TOKEN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
