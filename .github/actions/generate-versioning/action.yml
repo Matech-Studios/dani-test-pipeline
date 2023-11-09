@@ -50,14 +50,13 @@ runs:
     - name: Commit changes to package.json
       shell: bash
       run: |
-
-        #eval "$(ssh-agent -s)"
-        #echo "${{ inputs.version_deploy_key }}" > /tmp/version_deploy_key
-        #chmod 600 /tmp/version_deploy_key
-        #ssh-add /tmp/version_deploy_key
+        # eval "$(ssh-agent -s)"
+        # echo "${{ inputs.version_deploy_key }}" > /tmp/version_deploy_key
+        # chmod 600 /tmp/version_deploy_key
+        # ssh-add /tmp/version_deploy_key
         git config --global user.email "devops@matechstudios.com"
         git config --global user.name "matechbot"
         git add *
         git commit -m "update package version $packageJsonVersion"
-        #git push
+        # git push
         https://matechbot:${{ inputs.version_deploy_token }}@github.com/Matech-Studios/dani-test-pipeline.git
