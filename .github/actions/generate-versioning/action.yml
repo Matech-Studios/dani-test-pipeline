@@ -49,9 +49,11 @@ runs:
 
     - name: Commit changes to package.json
       shell: bash
+      env:
+        PIPELINE_DEPLOY_TOKEN: ${{inputs.pipeline_deploy_key}}
       run: |
         git config --global user.email "devops@matechstudios.com"
         git config --global user.name "matechbot"
         git add *
         git commit -m "update package version $packageJsonVersion"
-        https://matechbot:${{ inputs.version_deploy_token }}@github.com/Matech-Studios/dani-test-pipeline.git
+        https://matechbot:$PIPELINE_DEPLOY_TOKEN@github.com/Matech-Studios/dani-test-pipeline.git
