@@ -51,7 +51,7 @@ runs:
       shell: bash
       run: |
 
-        eval "$(ssh-agent -s)"
+        #eval "$(ssh-agent -s)"
         #echo "${{ inputs.version_deploy_key }}" > /tmp/version_deploy_key
         #chmod 600 /tmp/version_deploy_key
         #ssh-add /tmp/version_deploy_key
