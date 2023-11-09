@@ -56,4 +56,4 @@ runs:
         git config --global user.name "matechbot"
         git add *
         git commit -m "update package version $packageJsonVersion"
-        https://matechbot:$PIPELINE_DEPLOY_TOKEN@github.com/Matech-Studios/dani-test-pipeline.git
+        git push https://matechbot:$PIPELINE_DEPLOY_TOKEN@github.com/Matech-Studios/dani-test-pipeline.git
