@@ -1,10 +1,6 @@
 name: "Generate Versioning"
 description: "This composite action will generate the package version and push it"
 inputs:
-  version_deploy_key: 
-    description: "ssh key to push to the repo"
-    required: true
-    default: 'World'
   version_deploy_token: 
     description: "token to push to the repo"
     required: true
@@ -50,7 +46,7 @@ runs:
     - name: Commit changes to package.json
       shell: bash
       env:
-        PIPELINE_DEPLOY_TOKEN: ${{inputs.pipeline_deploy_key}}
+        PIPELINE_DEPLOY_TOKEN: ${{inputs.version_deploy_token}}
       run: |
         git config --global user.email "devops@matechstudios.com"
         git config --global user.name "matechbot"

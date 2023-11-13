@@ -13,7 +13,7 @@ inputs:
     description: "The application to be updated"
     required: true
     default: ""
-  pipeline_deploy_key:
+  pipeline_deploy_token:
     description: "ssh key to push to the argo repo"
     required: true
     default: 'World'
@@ -26,22 +26,18 @@ runs:
         IMAGE_VERSION: ${{inputs.image_version}}
         ENVIRONMENT: ${{inputs.environment}}
         APPLICATION_NAME: ${{inputs.application_name}}
-        PIPELINE_DEPLOY_KEY: ${{inputs.pipeline_deploy_key}}
+        PIPELINE_DEPLOY_TOKEN: ${{inputs.pipeline_deploy_token}}
       run: |
         echo "Version to deploy: $IMAGE_VERSION on $ENVIRONMENT"
         cat << EOF
-        eval "$(ssh-agent -s)"
-        echo "$PIPELINE_DEPLOY_KEY" > pipeline_deploy_key
-        chmod 600 pipeline_deploy_key
-        ssh-add ./pipeline_deploy_key
-        git config --global user.email "you@example.com"
-        git config --global user.name "Automated Pipeline Deployer"
+        git config --global user.email "devops@matechstudios.com"
+        git config --global user.name "matechbot"
         git clone git@github.com:Matech-Studios/matech-memento-k8s.git
         cd matech-*-k8s
         cd v2/$APPLICATION_NAME/$ENVIRONMENT
         cp -f values.yaml-DEFAULT values.yaml
         sed -i "s/##VERSION##/$IMAGE_VERSION/g" values.yaml
         git add *
-        git commit -m "version $IMAGE_VERSION"
-        git pus
+        git commit -m "update argo deployment version $IMAGE_VERSION"
+        git push https://matechbot:$PIPELINE_DEPLOY_TOKEN@github.com/Matech-Studios/dani-test-pipeline.git
         EOF
