@@ -5,6 +5,10 @@ inputs:
     description: "token to push to the repo"
     required: true
     default: 'World'
+  application_repo: 
+    description: "application repo"
+    required: true
+    default: 'World'
 runs:
   using: "composite"
   steps:
@@ -47,9 +51,10 @@ runs:
       shell: bash
       env:
         PIPELINE_DEPLOY_TOKEN: ${{inputs.version_deploy_token}}
+        APPLICATION_REPO: ${{inputs.application_repo}}
       run: |
         git config --global user.email "devops@matechstudios.com"
         git config --global user.name "matechbot"
         git add *
         git commit -m "update package version $packageJsonVersion"
-        git push https://matechbot:$PIPELINE_DEPLOY_TOKEN@github.com/Matech-Studios/dani-test-pipeline.git
+        git push https://matechbot:$PIPELINE_DEPLOY_TOKEN@github.com/Matech-Studios/$APPLICATION_REPO.git

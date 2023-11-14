@@ -24,6 +24,7 @@ jobs:
         uses: ./.github/actions/generate-versioning
         with:
           version_deploy_token: ${{ secrets.VERSION_DEPLOY_TOKEN }}
+          application_repo: memento-api
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
