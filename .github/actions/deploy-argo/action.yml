@@ -14,7 +14,7 @@ inputs:
     required: true
     default: ""
   pipeline_deploy_token:
-    description: "ssh key to push to the argo repo"
+    description: "token to push to the argo repo"
     required: true
     default: 'World'
 runs:
